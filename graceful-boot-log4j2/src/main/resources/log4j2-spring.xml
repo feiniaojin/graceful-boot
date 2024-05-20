@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- No need to set system property "log4j2.contextSelector" to any value
+     when using <asyncLogger> or <asyncRoot>. -->
+<!--日志框架只打印WARN级别的-->
+<Configuration status="WARN">
+
+    <Properties>
+        <Property name="LoggingPath">${spring:logging.file.path:-/app/logs}</Property>
+        <Property name="LoggingLevelRoot">${spring:logging.logging.root:-info}</Property>
+        <Property name="LoggingLevelFw">${spring:logging.logging.com.feiniaojin:-debug}</Property>
+        <Property name="AppName">${spring:spring.application.name}</Property>
+        <Property name="DefaultPattern">%d{yyyy-MM-dd HH:mm:ss.SSS} %traceId [%t] %level %c{1} %M %line : %msg{nolookups} %ex%n</Property>
+        <Property name="ConsolePattern">${spring:logging.pattern.console:-${DefaultPattern}}</Property>
+        <Property name="FilePattern">${spring:logging.pattern.file:-${DefaultPattern}}</Property>
+    </Properties>
+    <Appenders>
+        <!--开发环境和测试环境才允许打控制台-->
+        <SpringProfile name="dev | test">
+            <Console name="Console" target="SYSTEM_OUT">
+                <PatternLayout>
+                    <Pattern>${ConsolePattern}</Pattern>
+                </PatternLayout>
+            </Console>
+        </SpringProfile>
+        <!-- Async Loggers will auto-flush in batches, so switch off immediateFlush. -->
+        <RollingRandomAccessFile name="InfoFile" fileName="${LoggingPath}/info.log"
+                                 filePattern="${LoggingPath}/info-%d{yyyy-MM-dd}-%i.log">
+            <Filters>
+                <!--只接受info以上的日志，此处会接受info和error-->
+                <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <PatternLayout>
+                <Pattern>${FilePattern}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <!--系统启动，滚动一次-->
+                <OnStartupTriggeringPolicy/>
+                <!--每12个小时，滚动一次-->
+                <TimeBasedTriggeringPolicy interval="16"/>
+                <!--文件大于250M，滚动一次-->
+                <SizeBasedTriggeringPolicy size="250 MB"/>
+            </Policies>
+            <!--最多保留20个日志文件-->
+            <DefaultRolloverStrategy max="20"/>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="ErrorFile" fileName="${LoggingPath}/error.log"
+                                 filePattern=".${LoggingPath}/error-%d{yyyy-MM-dd}-%i.log">
+            <Filters>
+                <!--只接受error日志，不会接受info日志-->
+                <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <PatternLayout>
+                <Pattern>${FilePattern}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <!--系统启动，滚动一次-->
+                <OnStartupTriggeringPolicy/>
+                <!--每12个小时，滚动一次-->
+                <TimeBasedTriggeringPolicy interval="16"/>
+                <!--文件大于250M，滚动一次-->
+                <SizeBasedTriggeringPolicy size="250 MB"/>
+            </Policies>
+            <!--最多保留20个日志文件-->
+            <DefaultRolloverStrategy max="20"/>
+        </RollingRandomAccessFile>
+    </Appenders>
+    <Loggers>
+        <AsyncLogger name="com.feiniaojin" level="${LoggingLevelFw}" includeLocation="true" additivity="false">
+            <AppenderRef ref="InfoFile"/>
+            <AppenderRef ref="InfoFile"/>
+            <SpringProfile name="dev | test">
+                <AppenderRef ref="Console"/>
+            </SpringProfile>
+        </AsyncLogger>
+        <AsyncRoot level="${LoggingLevelRoot}" includeLocation="true">
+            <AppenderRef ref="InfoFile"/>
+            <AppenderRef ref="ErrorFile"/>
+            <SpringProfile name="dev | test">
+                <AppenderRef ref="Console"/>
+            </SpringProfile>
+        </AsyncRoot>
+    </Loggers>
+</Configuration>
