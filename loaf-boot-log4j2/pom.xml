@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.feiniaojin.boot</groupId>
-        <artifactId>graceful-boot</artifactId>
+        <artifactId>loaf-boot</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <groupId>com.feiniaojin.boot</groupId>
-    <artifactId>graceful-boot-log4j2</artifactId>
+    <artifactId>loaf-boot-log4j2</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -15,7 +15,7 @@
     <url>http://maven.apache.org</url>
 
     <properties>
-        <java.version>17</java.version>
+        <java.version>8</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.compilerVersion>${java.version}</maven.compiler.compilerVersion>

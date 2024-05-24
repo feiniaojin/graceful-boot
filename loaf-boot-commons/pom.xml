@@ -3,12 +3,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.feiniaojin.boot</groupId>
-        <artifactId>graceful-boot</artifactId>
+        <artifactId>loaf-boot</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <groupId>com.feiniaojin.boot</groupId>
-    <artifactId>graceful-boot-commons</artifactId>
+    <artifactId>loaf-boot-commons</artifactId>
     <packaging>jar</packaging>
 
     <name>graceful-boot-commons</name>
